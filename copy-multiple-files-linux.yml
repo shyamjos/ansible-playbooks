@@ -1,0 +1,23 @@
+---
+
+- hosts: myserver
+  gather_facts: yes
+  become: true
+  become_method: sudo
+ 
+  tasks:
+
+
+
+    - name: Copy file
+      copy:
+        src: "{{ item }}"
+        dest: /home/myserver
+        owner: root
+        mode: 0755
+        force: yes
+      with_fileglob:
+         - /home/user/myfile.sh
+         - /home/user/myfile-2.sh
+         - /home/user/backups/*
+   

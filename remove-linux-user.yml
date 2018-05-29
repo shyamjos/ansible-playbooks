@@ -1,0 +1,23 @@
+---
+
+- hosts: db
+  gather_facts: True
+  vars:
+    users:
+      - user1
+      - user2
+
+
+  become: true
+  become_method: sudo
+
+  tasks:
+
+   - name: Removing user
+     user:
+       name: '{{item}}'
+       state: absent
+     with_items: "{{users}}"
+
+
+

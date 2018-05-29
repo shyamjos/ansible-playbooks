@@ -1,0 +1,15 @@
+---
+
+- hosts: 001ubuntu
+  gather_facts: true
+
+  become: true
+  become_method: sudo
+
+  tasks:
+
+  - name: Install the package "nagios-plugins"
+    apt:
+      name: nagios-plugins
+      state: present
+      update_cache: yes
