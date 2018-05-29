@@ -1,0 +1,13 @@
+---
+
+- hosts: myserver
+  gather_facts: yes
+  become: true
+  become_method: sudo
+ 
+  tasks:
+
+   - synchronize:  src={{ item }} dest=/home/user/logs mode=pull
+     with_items:
+      - "/var/log/*"
+
