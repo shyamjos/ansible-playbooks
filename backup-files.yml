@@ -1,0 +1,20 @@
+- hosts: all
+ # gather_facts: False
+  become: true
+  become_method: sudo
+  vars:
+    files:
+      - /home/mobme/.ssh
+      - /home/mobme-reports/.ssh
+      - /etc/default/iptables
+      - /etc/cron.d
+      - /etc/network/interfaces 
+  tasks:
+    - name: Backup running on {{ansible_hostname}} server
+      synchronize:
+        src: '{{item}}'
+        dest: /home/shyam/backups/{{ansible_hostname}}
+        mode: pull
+      with_items: "{{files}}"
+
+

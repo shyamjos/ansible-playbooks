@@ -1,0 +1,39 @@
+---
+
+- hosts: server1 server2 server3
+  gather_facts: True
+
+  vars:
+    users:
+      - user1
+      - user2
+      - user3
+ 
+  become: true
+  become_method: sudo
+
+  tasks:
+
+   - name: Adding users 
+     user:
+       name: '{{item}}'
+       shell: /bin/bash
+       state: present
+     with_items: "{{users}}"
+
+   - name: Placing SSH key for users
+     authorized_key: user={{ item }} key="{{ lookup('file', '/home/user/ansible/keys/pub_keys/{{ item }}.pub' ) }}"
+     with_items: "{{users}}"
+
+   - name: Adding users to SSH AllowUsers
+     replace:
+      backup: yes
+      dest: /etc/ssh/sshd_config
+      regexp: '^(AllowUsers(?!.*\b{{ item }}\b).*)$'
+      replace: '\1 {{ item }}'
+      validate: '/usr/sbin/sshd -t -f %s'
+     with_items: "{{users}}"
+
+   - service:
+      name: ssh
+      state: restarted
